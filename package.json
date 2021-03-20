@@ -1,0 +1,28 @@
+{
+  "name": "favmovies",
+  "version": "1.0.0",
+  "description": "Build a single page to show everyone's favourite movies from database, it should at least show movie Title, Poster, and Plot synopsis using OMDb API ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssshammi/assignmentLumina.git"
+  },
+  "keywords": [
+    "assignment",
+    "Lumina",
+    "node",
+    "sqllite"
+  ],
+  "author": "shammi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ssshammi/assignmentLumina/issues"
+  },
+  "homepage": "https://github.com/ssshammi/assignmentLumina#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
