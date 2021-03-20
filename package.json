@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/ssshammi/assignmentLumina#readme",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "needle": "^2.6.0"
   }
 }
