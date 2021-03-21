@@ -4,7 +4,6 @@ const port = process.env.PORT || 8080;
 const App = express();
 const omdbURL = 'http://www.omdbapi.com/';
 let param ={
-    i:'tt3896198',
     apikey: '6694fd2f'
 };
 
@@ -13,7 +12,7 @@ App.get('/', (request,response) =>{
 
     console.log("nothing");
     
-   // param.t = 'tt3896198';
+    param.i = 'tt3896198';
 
     needle.request('get', omdbURL, param, function (err, res, res) {
         if (err) {

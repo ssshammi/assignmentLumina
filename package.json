@@ -4,6 +4,7 @@
   "description": "Build a single page to show everyone's favourite movies from database, it should at least show movie Title, Poster, and Plot synopsis using OMDb API ",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -24,6 +25,8 @@
   "homepage": "https://github.com/ssshammi/assignmentLumina#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "needle": "^2.6.0"
+    "knex": "^0.95.2",
+    "needle": "^2.6.0",
+    "sqlite3": "^5.0.2"
   }
 }
