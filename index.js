@@ -45,42 +45,42 @@ App.get("/users", async (request, response) => {
     )
 
   // Promise.resolve(userMovieList);
-  console.log(userMovieList);
+  console.log(userMovieList[0]);
 
-  console.log(userlist);
+  //console.log(userlist);
   response.send("see console" + userMovieList);
   response.end();
 });
 
-async function getMovieData(favourite_movies) {
+function getMovieData(favourite_movies) {
   var favMovies = [];
   var movieArray = favourite_movies.split(",");
   var itemsProcessed = 0;
+  return new Promise(resolve => {
+    var movieslist = movieArray.map(async function (movieID) {
+      param.i = movieID;
 
-  var movieslist = await movieArray.map(async function (movieID) {
-    param.i = movieID;
+      let MovieDetail = await needle("get", omdbURL, param, { json: false })
+        .then(function (res) {
+          return res.body;
+        })
+        .catch(function (err) {
+          console.log("Error " + err);
+        });
+      let tempObj = {
+        ID: MovieDetail.imdbID,
+        Title: MovieDetail.Title,
+        Year: MovieDetail.Year,
+        Plot: MovieDetail.Plot,
+        Poster: MovieDetail.Poster,
+      };
+      console.log("short details of movie" + tempObj.ID);
+      //console.log(tempObj);
+      return tempObj;
 
-    let MovieDetail = await needle("get", omdbURL, param, { json: false })
-      .then(function (res) {
-        return res.body;
-      })
-      .catch(function (err) {
-        console.log("Error " + err);
-      });
-
-    return {
-      ID: MovieDetail.imdbID,
-      Title: MovieDetail.Title,
-      Year: MovieDetail.Year,
-      Plot: MovieDetail.Plot,
-      Poster: MovieDetail.Poster,
-    };
-
-    //Promise.resolve(favMovies);
+    });
+    resolve(movieslist);
   });
-  console.log("movieslist");
-  console.log(movieslist);
-  return (movieslist);
 
 }
 
