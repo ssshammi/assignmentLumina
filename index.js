@@ -28,19 +28,26 @@ App.get("/", async (request, response) => {
 
 App.get("/users", async (request, response) => {
   //console.log("movieDB");
-
-  const userlist = await moviedb.getUsers();
+  //database call works fine
+  let userlist = await moviedb.getUsers();
   // console.log(userlist);
-  var userMovieList = [];
-  userMovieList = Object.keys(userlist).forEach(function (user) {
-    userMovieList.push({
-      id: userlist[user].id,
-      name: userlist[user].firstName + " " + userlist[user].lastName,
-      favourite_movies: getMovieData(userlist[user].favourite_movies),
-    });
-  });
+  let userMovieList =
+    await userlist.map(async (user) => {
 
+      let movieInfoObj = await getMovieData(user.favourite_movies);
+      console.log(movieInfoObj);
+      return {
+        id: user.id,
+        name: user.firstName + " " + user.lastName,
+        favourite_movies: movieInfoObj,
+      };
+    }
+    )
+
+  // Promise.resolve(userMovieList);
   console.log(userMovieList);
+
+  console.log(userlist);
   response.send("see console" + userMovieList);
   response.end();
 });
@@ -50,7 +57,7 @@ async function getMovieData(favourite_movies) {
   var movieArray = favourite_movies.split(",");
   var itemsProcessed = 0;
 
-  let movieslist = await movieArray.forEach(async function (movieID) {
+  var movieslist = await movieArray.map(async function (movieID) {
     param.i = movieID;
 
     let MovieDetail = await needle("get", omdbURL, param, { json: false })
@@ -61,19 +68,19 @@ async function getMovieData(favourite_movies) {
         console.log("Error " + err);
       });
 
-    favMovies.push({
+    return {
       ID: MovieDetail.imdbID,
       Title: MovieDetail.Title,
       Year: MovieDetail.Year,
       Plot: MovieDetail.Plot,
       Poster: MovieDetail.Poster,
-    });
-    //console.log(favMovies);
-    return;
+    };
+
+    //Promise.resolve(favMovies);
   });
-  movieslist
-  console.log(favMovies);
-  return favMovies;
+  console.log("movieslist");
+  console.log(movieslist);
+  return (movieslist);
 
 }
 
