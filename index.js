@@ -30,58 +30,67 @@ App.get("/users", async (request, response) => {
   //console.log("movieDB");
   //database call works fine
   let userlist = await moviedb.getUsers();
-  // console.log(userlist);
-  let userMovieList =
-    await userlist.map(async (user) => {
+  //console.log(userlist);
 
-      let movieInfoObj = await getMovieData(user.favourite_movies);
-      console.log(movieInfoObj);
-      return {
-        id: user.id,
-        name: user.firstName + " " + user.lastName,
-        favourite_movies: movieInfoObj,
-      };
-    }
-    )
+
+  let userMovieList = await getMovieUserObj(userlist);
+
 
   // Promise.resolve(userMovieList);
   console.log(userMovieList[0]);
 
   //console.log(userlist);
-  response.send("see console" + userMovieList);
-  response.end();
+  //response.send("see console" + userMovieList)[2];
+  //response.end();
+  response.status(201).json(userMovieList);
 });
 
-function getMovieData(favourite_movies) {
+function getMovieUserObj(userlist) {
+  return Promise.all(userlist.map(async (user) => {
+
+    let movieInfoObj = await getMovieData(user.favourite_movies);
+    //console.log(movieInfoObj);
+    return {
+      id: user.id,
+      name: user.firstName + " " + user.lastName,
+      favourite_movies: movieInfoObj,
+    };
+  }
+  ));
+}
+
+
+async function getMovieData(favourite_movies) {
   var favMovies = [];
   var movieArray = favourite_movies.split(",");
   var itemsProcessed = 0;
-  return new Promise(resolve => {
-    var movieslist = movieArray.map(async function (movieID) {
-      param.i = movieID;
 
-      let MovieDetail = await needle("get", omdbURL, param, { json: false })
-        .then(function (res) {
-          return res.body;
-        })
-        .catch(function (err) {
-          console.log("Error " + err);
-        });
-      let tempObj = {
-        ID: MovieDetail.imdbID,
-        Title: MovieDetail.Title,
-        Year: MovieDetail.Year,
-        Plot: MovieDetail.Plot,
-        Poster: MovieDetail.Poster,
-      };
-      console.log("short details of movie" + tempObj.ID);
-      //console.log(tempObj);
-      return tempObj;
+  return Promise.all(movieArray.map(async function (movieID) {
 
-    });
-    resolve(movieslist);
-  });
+    param.i = movieID;
 
+    return await needle("get", omdbURL, param, { json: false })
+      .then(function (res) {
+        //return res.body;
+        let movieDetail = res.body;
+        let tempObj = {
+          ID: movieDetail.imdbID,
+          Title: movieDetail.Title,
+          Year: movieDetail.Year,
+          Plot: movieDetail.Plot,
+          Poster: movieDetail.Poster,
+        };
+        // console.log("short details of movie" + tempObj.ID);
+        //console.log(tempObj);
+        return tempObj;
+      })
+      .catch(function (err) {
+        console.log("Error " + err);
+        return [];
+      });
+
+    return movieOb;
+  }));
 }
 
 App.listen(port, () => {
